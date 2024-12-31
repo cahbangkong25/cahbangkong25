@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jam Kerja Ayu Cantik</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        canvas {
+            border: 5px solid #333;
+            border-radius: 50%;
+            background-color: white;
+        }
+	.text {
+		margin: 20px;
+		color: red;
+	}
+    </style>
+</head>
+<body>
+ <div class="text">
+	<h1>JAM KERJA AYU CANTIK </h1>
+</div>
+<div>
+    <canvas id="clock" width="600" height="600"></canvas>
+</div>
+    <script>
+        const canvas = document.getElementById("clock");
+        const ctx = canvas.getContext("2d");
+        const radius = canvas.width / 2;
+
+        ctx.translate(radius, radius);  // Pusatkan koordinat ke tengah canvas
+
+        function drawClock() {
+            const now = new Date();
+            const hour = now.getHours() % 12;
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+            const millisecond = now.getMilliseconds();
+
+            ctx.clearRect(-radius, -radius, canvas.width, canvas.height); // Bersihkan canvas
+
+            // Gambar lingkaran jam
+            ctx.beginPath();
+            ctx.arc(0, 0, radius - 10, 0, 2 * Math.PI);
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 10;
+            ctx.stroke();
+
+            // Gambar pembagian waktu (angka 1 sampai 12)
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            for (let i = 1; i <= 12; i++) {
+                // Menyesuaikan posisi angka agar 12 berada di atas dan 6 di bawah
+                const angle = (i * Math.PI / 6) - Math.PI / 2;  // Rotasi dimulai dari atas
+                const x = (radius - 30) * Math.cos(angle);
+                const y = (radius - 30) * Math.sin(angle);
+                ctx.fillText(i, x, y);
+            }
+
+            // Gambar jarum jam
+            drawHand((hour + minute / 60) * (Math.PI / 8), radius - 70,8);
+            drawHand(minute * (Math.PI / 60), radius - 50, 2);
+            drawHand(second * (Math.PI / 30), radius - 30, 2, "#ff0000");
+
+              const labels = [
+                "FINGGER", "CHEK IN TAMU", "CHEK RESERVASI", "CHEK RESERVASI", "MASUK, JAJAN", "DANDAN", 
+                "CHEK RESERVASI, MAKAN", "CHEK RESRVASI", "MAKAN, PULANG", "CHEK TAMU CHEK OUT", "CHEK RESERVASI", "CHEK IN TAMU"
+            ];
+            const angleStep = Math.PI / 6; // 30 derajat per bagian (360° / 12)
+            ctx.font = "11px Arial"; // Ukuran font kecil
+            ctx.fillStyle = "#333";  // Warna teks
+
+            for (let i = 0; i < labels.length; i++) {
+                const angle = i * angleStep;  // Setiap label akan ditempatkan dengan interval 30 derajat
+                const x = (radius - 50) * Math.cos(angle);  // Menyesuaikan posisi teks
+                const y = (radius - 50) * Math.sin(angle);  // Menyesuaikan posisi teks
+
+                // Gambar teks pada posisi yang dihitung
+                ctx.fillText(labels[i], x, y);
+            }
+
+            // Memanggil drawClock lagi menggunakan requestAnimationFrame untuk animasi halus
+            requestAnimationFrame(drawClock);
+        }
+
+        function drawHand(angle, length, width, color = "#333") {
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(length * Math.cos(angle), length * Math.sin(angle));
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+        }
+
+        drawClock();
+    </script>
+
+</body>
+</html>
+
